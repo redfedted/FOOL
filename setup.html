@@ -1,27 +1,131 @@
-<script>
-    document.getElementById('generateLinkButton').addEventListener('click', function() {
-        // 1. Get the secret word from the input field
-        let secretWordInput = document.getElementById('secretWord');
-        let wordToPass = secretWordInput.value;
-
-        // 2. Check if a word was actually entered
-        if (wordToPass.trim() === "") { // Check for empty or just spaces
-            alert("Please enter a secret word!");
-            return; // Stop execution if no word is entered
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hangman Setup - Word Setter</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
 
-        // 3. URL-encode the word
-        let encodedWord = encodeURIComponent(wordToPass);
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
 
-        // 4. Construct the game link
-        const gameLink = `${window.location.origin}/play.html?word=${encodedWord}`;
+        div {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px; /* Limit width for better readability */
+            text-align: center; /* Center content in the div */
+        }
 
-        // 5. Display the generated link on the page
-        let gameUrlElement = document.getElementById('gameUrl');
-        gameUrlElement.href = gameLink; // Set the link URL
-        gameUrlElement.textContent = gameLink; // Set the link text to be the URL itself
+        label {
+            display: block; /* Label on its own line */
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
 
-        let linkDisplayDiv = document.getElementById('link-display');
-        linkDisplayDiv.style.display = 'block'; // Make the link display visible
-    });
-</script>
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Input takes full width of container */
+            box-sizing: border-box; /* Include padding and border in width */
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #link-display {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: none; /* Initially hidden */
+            text-align: center;
+        }
+
+        #game-link {
+            background-color: #e8f0fe;
+            padding: 10px;
+            border: 1px solid #b3cce4;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        #game-link a {
+            color: #2471a3;
+            text-decoration: none; /* Remove underline from link */
+            word-break: break-all; /* Break long URLs */
+        }
+    </style>
+</head>
+<body>
+    <h1>Set up your Hangman Game!</h1>
+
+    <div>
+        <label for="secretWord">Enter Secret Word for the Guesser:</label>
+        <input type="text" id="secretWord" placeholder="Enter word here (e.g., ADVENTURE)">
+    </div>
+
+    <button id="generateLinkButton">Generate Game Link</button>
+
+    <div id="link-display">
+        <p>Great! Share this link with the other player so they can guess the word:</p>
+        <div id="game-link">
+            <a href="#" id="gameUrl" target="_blank"></a>
+        </div>
+    </div>
+
+   
+    <script>
+        document.getElementById('generateLinkButton').addEventListener('click', function() {
+            // 1. Get the secret word from the input field
+            let secretWordInput = document.getElementById('secretWord');
+            let wordToPass = secretWordInput.value;
+    
+            // 2. Check if a word was entered
+            if (wordToPass.trim() === "") {
+                alert("Please enter a secret word!");
+                return; // Stop if no word
+            }
+    
+            // 3. URL-encode the word
+            let encodedWord = encodeURIComponent(wordToPass);
+    
+            // 4. Construct the game link
+            const gameLink = `${window.location.origin}/play.html?word=${encodedWord}`;
+    
+            // 5. Display the link
+            let gameUrlElement = document.getElementById('gameUrl');
+            gameUrlElement.href = gameLink;
+            gameUrlElement.textContent = gameLink;
+    
+            document.getElementById('link-display').style.display = 'block'; // Show link div
+        });
+    </script>
+</body>
+</html>
