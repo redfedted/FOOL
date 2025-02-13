@@ -100,22 +100,14 @@
         </div>
     </div>
 
+   
     <script>
-        document.getElementById('generateLinkButton').addEventListener('click', function() {
-            const word = document.getElementById('secretWord').value.toUpperCase().trim(); // Trim whitespace
-            if (!word) {
-                alert("Please enter a secret word.");
-                return;
-            }
+        document.getElementById('playButton').addEventListener('click', function() {
+            let wordToPass = "Challenge Word";
+            let encodedWord = encodeURIComponent(wordToPass);
+            const gameLink = `${window.location.origin}/play.html?word=${encodedWord}`;
 
-            const encodedWord = encodeURIComponent(word);
-            const gameLink = `<span class="math-inline">\{window\.location\.origin\}/play\.html?word\=</span>{encodedWord}`;
-
-            const gameUrlElement = document.getElementById('gameUrl');
-            gameUrlElement.href = gameLink;
-            gameUrlElement.textContent = window.location.origin + '/' + gameLink;
-
-            document.getElementById('link-display').style.display = 'block';
+            window.location.href = gameLink; // Redirect when button is clicked
         });
     </script>
 </body>
