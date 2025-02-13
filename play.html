@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hangman Game - Guess the Word</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace; /* Monospace for consistent blanks */
+            background-color: #e0f7fa; /* Light teal background */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #00838f; /* Darker teal for heading */
+            margin-bottom: 20px;
+        }
+
+        #word-display {
+            font-size: 2.5em;
+            letter-spacing: 0.4em;
+            margin-bottom: 30px;
+            color: #2e7d32; /* Green for the word */
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #a5d6a7; /* Subtle text shadow for depth */
+        }
+
+        #guessed-letters {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        #correct-letters {
+            color: #2e7d32; /* Green for correct letters */
+            font-weight: bold;
+        }
+
+        #incorrect-guesses {
+            color: #d32f2f; /* Red for incorrect guesses */
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 40px;
+            text-align: center;
+            font-size: 1.5em;
+            padding: 8px;
+            border: 2px solid #b2ebf2; /* Lighter teal border */
+            border-radius: 5px;
+            margin-right: 10px;
+            font-family: inherit; /* Inherit font for input */
+        }
+
+        button {
+            background-color: #00bcd4; /* Teal button color */
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #00acc1; /* Darker teal on hover */
+        }
+
+        #message {
+            font-weight: bold;
+            margin-top: 30px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #555;
+        }
+
+        #message.win {
+            color: #2e7d32; /* Green for win message */
+        }
+
+        #message.lose {
+            color: #d32f2f; /* Red for lose message */
+        }
+    </style>
+</head>
+<body>
+    <h1>Hangman - Guess the Word!</h1>
+
+    <div id="word-display"></div>
+    <div id="guessed-letters">
+        Correctly guessed letters: <span id="correct-letters"></span> | <span id="incorrect-guesses"></span>
+    </div>
+
+    <div>
+        <label for="guessInput">Guess a letter:</label>
+        <input type="text" id="guessInput" maxlength="1" pattern="[A-Za-z]" placeholder="_">
+        <button id="guessButton">Guess Letter</button>
+    </div>
+
+    <p id="message"></p>
+
+    <script>
+        // JavaScript code from the previous version (play.html) remains the same
+        // ... (paste the JavaScript code here from your previous play.html)
+
+        const wordDisplay = document.getElementById('word-display');
+        const correctLettersDisplay = document.getElementById('correct-letters');
+        const incorrectGuessesDisplay = document.getElementById('incorrect-guesses');
+        const guessInput = document.getElementById('guessInput');
+        const guessButton = document.getElementById('guessButton');
+        const messageDisplay = document.getElementById('message');
+
+        let secretWord = "";
+        let guessedLetters = { correct: [], incorrect: [] };
+        let blanksArray = [];
+        const maxIncorrectGuesses = 6;
+
+        function startGame() {
+            const urlParams = new URLSearchParams(window.location.search);
+            secretWord = urlParams.get('word');
+
+            if (!secretWord) {
+                messageDisplay.textContent = "Error: No word provided in the link!";
+                messageDisplay.className = 'lose'; // Use 'lose' class for error message
+                guessInput.disabled = true;
+                guessButton.disabled = true;
+                return;
+            }
+            secretWord = decodeURIComponent(secretWord).toUpperCase();
+
+            blanksArray = Array(secretWord.length).fill('_');
+            updateWordDisplay();
+            updateGuessedLettersDisplay();
+            messageDisplay.textContent = "Let's play! Guess a letter...";
+            messageDisplay.className = ''; // Reset message class
+            guessInput.disabled = false;
+            guessButton.disabled = false;
+            guessInput.value = "";
+            guessInput.focus();
+        }
+
+        function updateWordDisplay() {
+            wordDisplay.textContent = blanksArray.join(' ');
+        }
+
+        function updateGuessedLettersDisplay() {
+            correctLettersDisplay.textContent = guessedLetters.correct.join(', ');
+            incorrectGuessesDisplay.textContent = `Incorrect guesses: ${guessedLetters.incorrect.length}/${maxIncorrectGuesses}`;
+        }
+
+        function checkWinLoss() {
+            if (!blanksArray.includes('_')) {
+                messageDisplay.textContent = `Congratulations! You guessed it: "${secretWord}"!`;
+                messageDisplay.className = 'win'; // Add 'win' class for styling
+                guessInput.disabled = true;
+                guessButton.disabled = true;
+                return true;
+            }
+
+            if (guessedLetters.incorrect.length >= maxIncorrectGuesses) {
+                messageDisplay.textContent = `Oh no! You ran out of guesses. The word was: "${secretWord}"`;
+                messageDisplay.className = 'lose'; // Add 'lose' class for styling
+                guessInput.disabled = true;
+                guessButton.disabled = true;
+                return true;
+            }
+            return false;
+        }
+
+
+        guessButton.addEventListener('click', function() {
+            const guess = guessInput.value.toUpperCase();
+            guessInput.value = "";
+
+            if (!guess || !guess.match(/[A-Z]/) || guess.length !== 1) {
+                messageDisplay.textContent = "Please enter a single letter (A-Z).";
+                messageDisplay.className = 'lose'; // Use 'lose' class for error message styling
+                return;
+            }
+
+            if (guessedLetters.correct.includes(guess) || guessedLetters.incorrect.includes(guess)) {
+                messageDisplay.textContent = `You already guessed '${guess}'. Try another letter.`;
+                messageDisplay.className = ''; // Reset message class
+                return;
+            }
+
+            if (secretWord.includes(guess)) {
+                guessedLetters.correct.push(guess);
+                for (let i = 0; i < secretWord.length; i++) {
+                    if (secretWord[i] === guess) {
+                        blanksArray[i] = guess;
+                    }
+                }
+                updateWordDisplay();
+                updateGuessedLettersDisplay();
+                checkWinLoss();
+                messageDisplay.className = ''; // Reset message class (in case of prior error)
+            } else {
+                guessedLetters.incorrect.push(guess);
+                updateGuessedLettersDisplay();
+                checkWinLoss();
+                if (guessedLetters.incorrect.length < maxIncorrectGuesses && !checkWinLoss()) {
+                    messageDisplay.textContent = `Incorrect guess. Attempts left!`;
+                    messageDisplay.className = ''; // Reset message class
+                }
+            }
+        });
+
+        startGame();
+    </script>
+</body>
+</html>

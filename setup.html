@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hangman Setup - Word Setter</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        div {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px; /* Limit width for better readability */
+            text-align: center; /* Center content in the div */
+        }
+
+        label {
+            display: block; /* Label on its own line */
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Input takes full width of container */
+            box-sizing: border-box; /* Include padding and border in width */
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #link-display {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: none; /* Initially hidden */
+            text-align: center;
+        }
+
+        #game-link {
+            background-color: #e8f0fe;
+            padding: 10px;
+            border: 1px solid #b3cce4;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        #game-link a {
+            color: #2471a3;
+            text-decoration: none; /* Remove underline from link */
+            word-break: break-all; /* Break long URLs */
+        }
+    </style>
+</head>
+<body>
+    <h1>Set up your Hangman Game!</h1>
+
+    <div>
+        <label for="secretWord">Enter Secret Word for the Guesser:</label>
+        <input type="text" id="secretWord" placeholder="Enter word here (e.g., ADVENTURE)">
+    </div>
+
+    <button id="generateLinkButton">Generate Game Link</button>
+
+    <div id="link-display">
+        <p>Great! Share this link with the other player so they can guess the word:</p>
+        <div id="game-link">
+            <a href="#" id="gameUrl" target="_blank"></a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('generateLinkButton').addEventListener('click', function() {
+            const word = document.getElementById('secretWord').value.toUpperCase().trim(); // Trim whitespace
+            if (!word) {
+                alert("Please enter a secret word.");
+                return;
+            }
+
+            const encodedWord = encodeURIComponent(word);
+            const gameLink = `<span class="math-inline">\{window\.location\.origin\}/play\.html?word\=</span>{encodedWord}`;
+
+            const gameUrlElement = document.getElementById('gameUrl');
+            gameUrlElement.href = gameLink;
+            gameUrlElement.textContent = window.location.origin + '/' + gameLink;
+
+            document.getElementById('link-display').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
