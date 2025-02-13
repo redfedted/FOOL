@@ -103,11 +103,16 @@
    
     <script>
         document.getElementById('playButton').addEventListener('click', function() {
-            let wordToPass = "Challenge Word";
-            let encodedWord = encodeURIComponent(wordToPass);
-            const gameLink = `${window.location.origin}/play.html?word=${encodedWord}`;
+            let wordToPass = prompt("Enter a word to play with:"); // Get word from user prompt
 
-            window.location.href = gameLink; // Redirect when button is clicked
+            // Handle case where user cancels the prompt (wordToPass might be null)
+            if (wordToPass) {
+                let encodedWord = encodeURIComponent(wordToPass);
+                const gameLink = `${window.location.origin}/play.html?word=${encodedWord}`;
+                window.location.href = gameLink; // Redirect when button is clicked
+            } else {
+                alert("No word entered. Please try again."); // Optional: Handle cancellation
+            }
         });
     </script>
 </body>
